@@ -1,11 +1,13 @@
 package org.revature.controllers;
 
+
 import io.javalin.apibuilder.CrudHandler;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 import org.revature.models.Dog;
 import org.revature.services.DogService;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class DogController implements CrudHandler {
@@ -44,7 +46,18 @@ public class DogController implements CrudHandler {
 
     @Override
     public void update(@NotNull Context context, @NotNull String s) {
-
+        try {
+            UUID id = UUID.fromString(s);
+            Map<String, Object> updates = context.bodyAsClass(Map.class);
+            boolean dogUpdated = dogService.updateDog(updates, id);
+            if (dogUpdated) {
+                context.status(200).result("Dog Information updated Successfully");
+            } else {
+                context.status(404).result("Update Failed!");
+            }
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());;
+        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.revature.services;
 
+import com.fasterxml.jackson.databind.deser.std.UUIDDeserializer;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.revature.DAOs.DogDAO;
 import org.revature.models.Dog;
 
@@ -19,9 +21,9 @@ public class DogService {
 
     public void createDog(Dog dog) {
         if (ownerService.getOwnerById(dog.getOwnerId()) == null) {
-            throw new IllegalArgumentException("Owner not found with ID: " + dog.getOwnerId());
+            throw new IllegalArgumentException("Owner not found with ID: " + dog.getOwnerId() + ". THAT DAWG NEEDS AN OWNER!");
         }
-        if (dog.getName().isEmpty()) {
+        if (dog.getName() == null || dog.getName().isEmpty()) {
             throw new IllegalArgumentException("Give that DAWG a NAME!");
         }
         if (dog.getOwnerId() == null || dog.getOwnerId().toString().isEmpty()) {
@@ -43,7 +45,7 @@ public class DogService {
         return dogDAO.findById(id);
     }
 
-    public boolean updateDog(Map<String, List<String>> updates, UUID id) {
+    public boolean updateDog(Map<String, Object> updates, UUID id) {
         return dogDAO.updateDog(updates, id);
     }
 

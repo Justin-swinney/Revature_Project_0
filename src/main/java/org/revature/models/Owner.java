@@ -61,4 +61,5 @@ public class Owner {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }

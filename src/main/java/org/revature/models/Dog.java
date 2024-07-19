@@ -92,4 +92,6 @@ public class Dog {
     public void setOwnerId(UUID ownerId) {
         this.ownerId = ownerId;
     }
+
+
 }

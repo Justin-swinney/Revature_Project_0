@@ -3,10 +3,7 @@ package org.revature.DAOs;
 import org.revature.models.Dog;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class DogDAOImpl implements DogDAO {
     private final Connection connection;
@@ -65,8 +62,20 @@ public class DogDAOImpl implements DogDAO {
     }
 
     @Override
-    public boolean updateDog(Map<String, List<String>> updates, UUID id) {
-        return false;
+    public boolean updateDog(Map<String, Object> updates, UUID id) {
+        String query = createUpdateQuery(updates);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            int i = 1;
+            for (Object value : updates.values()) {
+                preparedStatement.setObject(i++, value);
+            }
+            preparedStatement.setObject(i, id);
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -89,11 +98,13 @@ public class DogDAOImpl implements DogDAO {
             try (ResultSet resultSet = preparedStatement .executeQuery()) {
                 while (resultSet.next()) {
                     dogs.add(moveResultsToDog(resultSet));
+
                 }
             }
         } catch (SQLException sqlException) {
             System.out.println(sqlException.getMessage());
         }
+
         return dogs;
     }
 
@@ -123,7 +134,18 @@ public class DogDAOImpl implements DogDAO {
         dog.setGender(resultSet.getString("gender"));
         dog.setColor(resultSet.getString("color"));
         dog.setBreed(resultSet.getString("breed"));
+        dog.setOwnerId(UUID.fromString(resultSet.getString("owner_id_fk")));
         return dog;
     }
+    private String createUpdateQuery(Map<String, Object> updates) {
+        StringBuilder query = new StringBuilder("UPDATE dogs SET ");
+        for (String key : updates.keySet()) {
+            query.append(key).append(" = ?, ");
+        }
+        query.setLength(query.length() - 2);
+        query.append(" WHERE ").append("animal_id").append(" = ?");
+        return query.toString();
+    }
+
 }
 

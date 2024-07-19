@@ -22,6 +22,9 @@ public class OwnerService {
     }
 
     public Owner getOwnerById(UUID id) {
+        if (id.toString().length() < 36) {
+            throw new IllegalArgumentException("Owner ID must be 36 characters!");
+        }
         return ownerDAO.findById(id);
     }
 

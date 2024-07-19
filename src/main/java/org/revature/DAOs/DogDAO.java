@@ -10,7 +10,7 @@ public interface DogDAO {
     void create(Dog dog);
     Dog findById(UUID id);
     List<Dog> findAll();
-    boolean updateDog(Map<String, List<String>> updates, UUID id);
+    boolean updateDog(Map<String, Object> updates, UUID id);
     void delete(UUID id);
     List<Dog> findAllDogsByOwnerId(UUID ownerId);
     List<Dog> getDogsByBreed(String breed);

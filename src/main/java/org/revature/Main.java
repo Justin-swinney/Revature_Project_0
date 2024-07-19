@@ -33,6 +33,7 @@ public class Main {
             System.out.println("ERROR @ Owner Endpoint Method: " + sqlException.getMessage());
         }
     }
+
     private static void getDogEndpoint() {
         try {
             DogDAOImpl dogDAO = new DogDAOImpl(JdbcUtils.getConnection());
